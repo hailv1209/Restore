@@ -4,7 +4,7 @@ import {
   CssBaseline,
   ThemeProvider,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import AboutPage from "../features/About/AboutPage";
@@ -16,8 +16,30 @@ import Header from "./Header";
 import 'react-toastify/dist/ReactToastify.css';
 import ServerError from "../app/Error/ServerError";
 import NotFound from "../app/Error/NotFound";
+import BasketPage from "../features/Basket/BasketPage";
+import { useStoreContext } from "../context/StoreContext";
+import { getCookie } from "../app/util/util";
+import agent from "../app/api/agent";
+import LoadingComponent from "./LoadingComponent";
+import CheckOutPage from "../features/Checkout/CheckOutPage";
 
 function App() {
+
+  const {setBasket} = useStoreContext() ;
+  const [loading, setLoading] = useState(true); 
+
+  useEffect(() => {
+    const buyerId = getCookie('buyerID');
+    if(buyerId) {
+      agent.Basket.get()
+        .then(basket => setBasket(basket))
+        .catch(error => console.log(error))
+        .finally(() => setLoading(false))
+    }else {
+      setLoading(false);
+    }
+  }, [setBasket])
+
   const [darkMode, SetDarkMode] = useState(false);
   const paletteType = darkMode ? "dark" : "light";
   const Theme = createTheme({
@@ -33,6 +55,8 @@ function App() {
     SetDarkMode(!darkMode);
   }
 
+  if(loading) return <LoadingComponent message="Initialising app...."/>
+
   return (
     <ThemeProvider theme={Theme}>
       <ToastContainer position="bottom-right" hideProgressBar theme="colored"/>
@@ -46,6 +70,8 @@ function App() {
           <Route path="/About" element={<AboutPage />} />
           <Route path="/Contact" element={<ContactPage />} />
           <Route path="/server-error" element={<ServerError />} />
+          <Route path="/basket" element={<BasketPage />} />
+          <Route path="/checkout" element={<CheckOutPage />} />
           <Route  path="*" element={<NotFound />} />
 
 
