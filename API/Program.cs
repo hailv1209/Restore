@@ -17,6 +17,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors();
 
+builder.Services.AddControllers(
+    options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();

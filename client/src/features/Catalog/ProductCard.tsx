@@ -52,7 +52,7 @@ export default function ProductCard({ product }: Props) {
       </CardContent>
       <CardActions>
         <LoadingButton 
-          loading={status.includes('pendingAddItem' + product.id)} 
+          loading={status === 'pendingAddItem' + product.id} 
           onClick={() => dispatch(addBasketItemAsycn({productId : product.id}))}  
            size="small">Add To Cart
         </LoadingButton>
