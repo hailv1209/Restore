@@ -31,6 +31,8 @@ export default function Catalog() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    console.log("l34", productsLoaded, dispatch);
+    
     if (!productsLoaded) dispatch(fetchProductsAsycn());
   }, [productsLoaded, dispatch]);
 
